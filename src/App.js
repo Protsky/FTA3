@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import './App.css';
@@ -156,76 +157,82 @@ function App() {
   ];
 
   return (
-    <div className="App" style={{ maxWidth: '800px', margin: '2rem auto', padding: '2rem', backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ marginBottom: '1.5rem', color: '#333' }}>{t.title}</h1>
-        <select value={language} onChange={(e) => setLanguage(e.target.value)} style={{ padding: '0.5rem' }}>
+    <div className="App">
+      <header className="header">
+        <h1>{t.title}</h1>
+        <select value={language} onChange={(e) => setLanguage(e.target.value)} className="language-select">
           <option value="it">🇮🇹 Italiano</option>
           <option value="fr">🇫🇷 Français</option>
           <option value="en">🇬🇧 English</option>
         </select>
-      </div>
+      </header>
 
-      <div style={{ display: 'grid', gap: '1rem' }}>
-        <div>
-          <label><strong>{t.lastName}</strong></label><br />
-          <input name="lastName" value={formData.lastName} onChange={handleChange} style={{ width: '100%', padding: '0.5rem' }} />
+      <form className="form-grid" onSubmit={(e) => e.preventDefault()}>
+        <div className="form-group">
+          <label>{t.lastName}</label>
+          <input name="lastName" value={formData.lastName} onChange={handleChange} />
         </div>
 
-        <div>
-          <label><strong>{t.responsible}</strong></label><br />
-          <select value={formData.responsible} onChange={(e) => setFormData(prev => ({ ...prev, responsible: e.target.value }))} style={{ width: '100%', padding: '0.5rem' }}>
+        <div className="form-group">
+          <label>{t.responsible}</label>
+          <select value={formData.responsible} onChange={(e) => setFormData(prev => ({ ...prev, responsible: e.target.value }))}>
             <option value="">{t.select}</option>
             {responsibles.map(r => <option key={r}>{r}</option>)}
           </select>
         </div>
 
-        <div>
-          <label><strong>{t.throw}</strong></label><br />
-          {[0, 1, 2].map(i => (
-            <input
-              key={i}
-              name={`throwAttempt${i}`}
-              value={formData.throwAttempts[i]}
-              onChange={handleChange}
-              type="number"
-              step="0.01"
-              style={{ width: '30%', padding: '0.5rem', marginRight: '1%' }}
-            />
-          ))}
+        <div className="form-group throw-group">
+          <label>{t.throw}</label>
+          <div className="throw-inputs">
+            {[0, 1, 2].map(i => (
+              <input
+                key={i}
+                name={`throwAttempt${i}`}
+                value={formData.throwAttempts[i]}
+                onChange={handleChange}
+                type="number"
+                step="0.01"
+                placeholder={`#${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
-        <div>
-          <label><strong>{t.core}</strong></label><br />
-          <input value={formData.coreStrength || coreElapsedTime.toString()} readOnly style={{ width: '70%', padding: '0.5rem' }} />
-          <button onClick={handleCoreTimerToggle} style={{ padding: '0.5rem 1rem', marginLeft: '1rem' }}>{coreTimerRunning ? 'Stop' : 'Start'}</button>
+        <div className="form-group timer-group">
+          <label>{t.core}</label>
+          <div className="timer-control">
+            <input value={formData.coreStrength || coreElapsedTime.toString()} readOnly />
+            <button onClick={handleCoreTimerToggle} type="button">{coreTimerRunning ? 'Stop' : 'Start'}</button>
+          </div>
         </div>
 
-        <div>
-          <label><strong>{t.endurance}</strong></label><br />
-          <input value={formData.enduranceTime || formatTime(elapsedTime)} readOnly style={{ width: '70%', padding: '0.5rem' }} />
-          <button onClick={handleTimerToggle} style={{ padding: '0.5rem 1rem', marginLeft: '1rem' }}>{timerRunning ? 'Stop' : 'Start'}</button>
+        <div className="form-group timer-group">
+          <label>{t.endurance}</label>
+          <div className="timer-control">
+            <input value={formData.enduranceTime || formatTime(elapsedTime)} readOnly />
+            <button onClick={handleTimerToggle} type="button">{timerRunning ? 'Stop' : 'Start'}</button>
+          </div>
         </div>
 
-        <div>
-          <label><strong>{t.height}</strong></label><br />
-          <input name="height" value={formData.height} onChange={handleChange} type="number" style={{ width: '100%', padding: '0.5rem' }} />
+        <div className="form-group">
+          <label>{t.height}</label>
+          <input name="height" value={formData.height} onChange={handleChange} type="number" />
         </div>
 
-        <div>
-          <label><strong>{t.weight}</strong></label><br />
-          <input name="weight" value={formData.weight} onChange={handleChange} type="number" style={{ width: '100%', padding: '0.5rem' }} />
+        <div className="form-group">
+          <label>{t.weight}</label>
+          <input name="weight" value={formData.weight} onChange={handleChange} type="number" />
         </div>
 
-        <div>
-          <label><strong>{t.waist}</strong></label><br />
-          <input name="waist" value={formData.waist} onChange={handleChange} type="number" style={{ width: '100%', padding: '0.5rem' }} />
+        <div className="form-group">
+          <label>{t.waist}</label>
+          <input name="waist" value={formData.waist} onChange={handleChange} type="number" />
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-          <button onClick={handleExportPDF} style={{ padding: '0.75rem 2rem', fontSize: '1rem', backgroundColor: '#007BFF', color: 'white', border: 'none', borderRadius: '5px' }}>{t.export}</button>
+        <div className="submit-group">
+          <button onClick={handleExportPDF} type="button">{t.export}</button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
