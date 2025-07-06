@@ -35,6 +35,10 @@ function App() {
   const [coreStartTime, setCoreStartTime] = useState(null);
   const [coreElapsedTime, setCoreElapsedTime] = useState(0);
 
+  // New states to track if timers were used (started & stopped once)
+  const [coreTimerUsed, setCoreTimerUsed] = useState(false);
+  const [enduranceTimerUsed, setEnduranceTimerUsed] = useState(false);
+
   const translations = {
     it: {
       title: "TFE3 - Inserimento dati",
@@ -121,23 +125,31 @@ function App() {
 
   const handleTimerToggle = () => {
     if (!timerRunning) {
-      setStartTime(Date.now());
-      setElapsedTime(0);
-      setTimerRunning(true);
+      if (enduranceTimerUsed) return; // Prevent restart after stop
+      if (window.confirm('Are you sure to start the endurance timer?')) {
+        setStartTime(Date.now());
+        setElapsedTime(0);
+        setTimerRunning(true);
+      }
     } else {
       setFormData(prev => ({ ...prev, enduranceTime: formatTime(elapsedTime) }));
       setTimerRunning(false);
+      setEnduranceTimerUsed(true);
     }
   };
 
   const handleCoreTimerToggle = () => {
     if (!coreTimerRunning) {
-      setCoreStartTime(Date.now());
-      setCoreElapsedTime(0);
-      setCoreTimerRunning(true);
+      if (coreTimerUsed) return; // Prevent restart after stop
+      if (window.confirm('Are you sure to start the core strength timer?')) {
+        setCoreStartTime(Date.now());
+        setCoreElapsedTime(0);
+        setCoreTimerRunning(true);
+      }
     } else {
       setFormData(prev => ({ ...prev, coreStrength: coreElapsedTime.toString() }));
       setCoreTimerRunning(false);
+      setCoreTimerUsed(true);
     }
   };
 
@@ -175,7 +187,10 @@ function App() {
 
         <div className="form-group">
           <label>{t.responsible}</label>
-          <select value={formData.responsible} onChange={(e) => setFormData(prev => ({ ...prev, responsible: e.target.value }))}>
+          <select
+            value={formData.responsible}
+            onChange={(e) => setFormData(prev => ({ ...prev, responsible: e.target.value }))}
+          >
             <option value="">{t.select}</option>
             {responsibles.map(r => <option key={r}>{r}</option>)}
           </select>
@@ -202,7 +217,13 @@ function App() {
           <label>{t.core}</label>
           <div className="timer-control">
             <input value={formData.coreStrength || coreElapsedTime.toString()} readOnly />
-            <button onClick={handleCoreTimerToggle} type="button">{coreTimerRunning ? 'Stop' : 'Start'}</button>
+            <button
+              onClick={handleCoreTimerToggle}
+              type="button"
+              disabled={coreTimerUsed && !coreTimerRunning}
+            >
+              {coreTimerRunning ? 'Stop' : 'Start'}
+            </button>
           </div>
         </div>
 
@@ -210,7 +231,13 @@ function App() {
           <label>{t.endurance}</label>
           <div className="timer-control">
             <input value={formData.enduranceTime || formatTime(elapsedTime)} readOnly />
-            <button onClick={handleTimerToggle} type="button">{timerRunning ? 'Stop' : 'Start'}</button>
+            <button
+              onClick={handleTimerToggle}
+              type="button"
+              disabled={enduranceTimerUsed && !timerRunning}
+            >
+              {timerRunning ? 'Stop' : 'Start'}
+            </button>
           </div>
         </div>
 
