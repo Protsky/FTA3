@@ -14,6 +14,7 @@ function App() {
       height: '',
       weight: '',
       waist: '',
+      age: '' // <--- Aggiunto
     };
   });
 
@@ -47,6 +48,7 @@ function App() {
       height: "📏 Altezza (cm):",
       weight: "⚖️ Peso (kg):",
       waist: "📐 Girovita (cm):",
+      age: "🎂 Età:", // <--- Aggiunto
       export: "📄 Esporta JSON",
       select: "-- Seleziona --"
     },
@@ -60,6 +62,7 @@ function App() {
       height: "📏 Taille (cm):",
       weight: "⚖️ Poids (kg):",
       waist: "📐 Tour de taille (cm):",
+      age: "🎂 Âge:", // <--- Aggiunto
       export: "📄 Exporter JSON",
       select: "-- Sélectionner --"
     },
@@ -73,6 +76,7 @@ function App() {
       height: "📏 Height (cm):",
       weight: "⚖️ Weight (kg):",
       waist: "📐 Waist (cm):",
+      age: "🎂 Age:", // <--- Aggiunto
       export: "📄 Export JSON",
       select: "-- Select --"
     }
@@ -195,6 +199,11 @@ function App() {
             <option value="">{t.select}</option>
             {responsibles.map(r => <option key={r}>{r}</option>)}
           </select>
+        </div>
+
+        <div className="form-group">
+          <label>{t.age}</label>
+          <input name="age" value={formData.age} onChange={handleChange} type="number" />
         </div>
 
         <div className="form-group throw-group">
