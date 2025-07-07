@@ -1,6 +1,4 @@
-// App.js
 import React, { useState, useEffect } from 'react';
-import jsPDF from 'jspdf';
 import './App.css';
 
 function App() {
@@ -35,7 +33,6 @@ function App() {
   const [coreStartTime, setCoreStartTime] = useState(null);
   const [coreElapsedTime, setCoreElapsedTime] = useState(0);
 
-  // New states to track if timers were used (started & stopped once)
   const [coreTimerUsed, setCoreTimerUsed] = useState(false);
   const [enduranceTimerUsed, setEnduranceTimerUsed] = useState(false);
 
@@ -50,7 +47,7 @@ function App() {
       height: "📏 Altezza (cm):",
       weight: "⚖️ Peso (kg):",
       waist: "📐 Girovita (cm):",
-      export: "📄 Esporta PDF",
+      export: "📄 Esporta JSON",
       select: "-- Seleziona --"
     },
     fr: {
@@ -63,7 +60,7 @@ function App() {
       height: "📏 Taille (cm):",
       weight: "⚖️ Poids (kg):",
       waist: "📐 Tour de taille (cm):",
-      export: "📄 Exporter PDF",
+      export: "📄 Exporter JSON",
       select: "-- Sélectionner --"
     },
     en: {
@@ -76,7 +73,7 @@ function App() {
       height: "📏 Height (cm):",
       weight: "⚖️ Weight (kg):",
       waist: "📐 Waist (cm):",
-      export: "📄 Export PDF",
+      export: "📄 Export JSON",
       select: "-- Select --"
     }
   };
@@ -125,7 +122,7 @@ function App() {
 
   const handleTimerToggle = () => {
     if (!timerRunning) {
-      if (enduranceTimerUsed) return; // Prevent restart after stop
+      if (enduranceTimerUsed) return;
       if (window.confirm('Are you sure to start the endurance timer?')) {
         setStartTime(Date.now());
         setElapsedTime(0);
@@ -140,7 +137,7 @@ function App() {
 
   const handleCoreTimerToggle = () => {
     if (!coreTimerRunning) {
-      if (coreTimerUsed) return; // Prevent restart after stop
+      if (coreTimerUsed) return;
       if (window.confirm('Are you sure to start the core strength timer?')) {
         setCoreStartTime(Date.now());
         setCoreElapsedTime(0);
@@ -153,14 +150,18 @@ function App() {
     }
   };
 
-  const handleExportPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(12);
-    doc.text(t.title, 10, 10);
-    Object.entries(formData).forEach(([key, value], index) => {
-      doc.text(`${key}: ${Array.isArray(value) ? value.join(', ') : value}`, 10, 20 + index * 8);
-    });
-    doc.save(`TFE3_${formData.lastName}.pdf`);
+  const handleExportJSON = () => {
+    const fileName = `TFE3_${formData.lastName || 'data'}.json`;
+    const jsonString = JSON.stringify(formData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+
+    URL.revokeObjectURL(url);
   };
 
   const responsibles = [
@@ -257,7 +258,7 @@ function App() {
         </div>
 
         <div className="submit-group">
-          <button onClick={handleExportPDF} type="button">{t.export}</button>
+          <button onClick={handleExportJSON} type="button">{t.export}</button>
         </div>
       </form>
     </div>
