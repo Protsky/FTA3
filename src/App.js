@@ -14,7 +14,7 @@ function App() {
       height: '',
       weight: '',
       waist: '',
-      age: '' // <--- Aggiunto
+      age: ''
     };
   });
 
@@ -48,8 +48,12 @@ function App() {
       height: "📏 Altezza (cm):",
       weight: "⚖️ Peso (kg):",
       waist: "📐 Girovita (cm):",
-      age: "🎂 Età:", // <--- Aggiunto
+      age: "🎂 Età:",
       export: "📄 Esporta JSON",
+      reset: "🔄 Reset Tutti i Dati",
+      resetConfirm: "Sei sicuro di voler cancellare tutti i dati? Questa azione è irreversibile.",
+      resetCodePrompt: "Inserisci il codice di reset:",
+      resetCodeWrong: "Codice errato. Reset annullato.",
       select: "-- Seleziona --"
     },
     fr: {
@@ -62,8 +66,12 @@ function App() {
       height: "📏 Taille (cm):",
       weight: "⚖️ Poids (kg):",
       waist: "📐 Tour de taille (cm):",
-      age: "🎂 Âge:", // <--- Aggiunto
+      age: "🎂 Âge:",
       export: "📄 Exporter JSON",
+      reset: "🔄 Réinitialiser toutes les données",
+      resetConfirm: "Êtes-vous sûr de vouloir tout réinitialiser ? Cette action est irréversible.",
+      resetCodePrompt: "Entrez le code de réinitialisation :",
+      resetCodeWrong: "Code incorrect. Réinitialisation annulée.",
       select: "-- Sélectionner --"
     },
     en: {
@@ -76,8 +84,12 @@ function App() {
       height: "📏 Height (cm):",
       weight: "⚖️ Weight (kg):",
       waist: "📐 Waist (cm):",
-      age: "🎂 Age:", // <--- Aggiunto
+      age: "🎂 Age:",
       export: "📄 Export JSON",
+      reset: "🔄 Reset All Data",
+      resetConfirm: "Are you sure you want to reset all data? This cannot be undone.",
+      resetCodePrompt: "Enter reset code:",
+      resetCodeWrong: "Incorrect code. Reset aborted.",
       select: "-- Select --"
     }
   };
@@ -166,6 +178,18 @@ function App() {
     link.click();
 
     URL.revokeObjectURL(url);
+  };
+
+  const handleReset = () => {
+    const code = prompt(t.resetCodePrompt);
+    if (code === '1234') {
+      if (window.confirm(t.resetConfirm)) {
+        localStorage.clear();
+        window.location.reload();
+      }
+    } else {
+      alert(t.resetCodeWrong);
+    }
   };
 
   const responsibles = [
@@ -268,6 +292,16 @@ function App() {
 
         <div className="submit-group">
           <button onClick={handleExportJSON} type="button">{t.export}</button>
+        </div>
+
+        <div className="submit-group">
+          <button
+            type="button"
+            onClick={handleReset}
+            style={{ backgroundColor: 'red', color: 'white' }}
+          >
+            {t.reset}
+          </button>
         </div>
       </form>
     </div>
